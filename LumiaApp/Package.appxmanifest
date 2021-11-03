@@ -9,14 +9,14 @@
   IgnorableNamespaces="rescap uap uap5 mp">
 
   <Identity
-    Name="LumiaWOA.LumiaApp"
-    Publisher="CN=Windows On Lumia Development Second Party Software 2020"
+    Name="LumiaApp1-adf5311"
+    Publisher="CN=media"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="66485c6e-313f-47f3-a3fa-9b2721268a85" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Lumia Settings</DisplayName>
+    <DisplayName>Lumia App 1.0</DisplayName>
     <PublisherDisplayName>LumiaWOA</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -47,6 +47,10 @@
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" uap5:Optional="true" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/></uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.lockScreenCall" />

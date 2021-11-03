@@ -48,7 +48,9 @@ namespace USBFunctionMode
         public string[] GetListOfConfigurations()
         {
             reg.GetSubKeyList(RegistryHive.HKEY_LOCAL_MACHINE, GetUSBFNConfigurationsLocation(), out string[] result);
-            return result == null ? null : result.Where(x => !x.Equals("default", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+            return result == null ? null : result.Where(x => !x.Equals("default", 
+                StringComparison.CurrentCulture)).ToArray();
         }
 
         public string GetCurrentConfiguration()

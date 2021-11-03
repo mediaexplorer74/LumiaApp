@@ -78,11 +78,11 @@ namespace LumiaApp
                 {
                     if (Line.StartsWith("HWID"))
                     {
-                        HR.Text = string.Join(".", Line.Split(":").Last().ToCharArray());
+                        HR.Text = string.Join(".", Line.Split(':').Last().ToCharArray());
                     }
                     else if (Line.StartsWith("CTR"))
                     {
-                        PC.Text = Line.Split(":").Last();
+                        PC.Text = Line.Split(':').Last();
                     }
                 }
 

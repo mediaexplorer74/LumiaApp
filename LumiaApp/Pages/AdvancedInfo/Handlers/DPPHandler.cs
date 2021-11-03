@@ -6,7 +6,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 using System.IO;
 using System.Threading.Tasks;
-using ImageMagick;
+using Windows.UI.Xaml.Controls;
+//using ImageMagick;
 
 namespace AdvancedInfo.Handlers
 {
@@ -38,12 +39,14 @@ namespace AdvancedInfo.Handlers
             try
             {
                 using Stream readStrm = strm.AsStreamForRead();
-                using MagickImage img = new(readStrm);
 
-                img.ColorFuzz = new Percentage(50);
-                img.Transparent(DarkMode ? MagickColors.Black : MagickColors.White);
+                //using MagickImage img = new(readStrm);
+                //using Image img = new(readStrm);
 
-                byte[] imageData = img.ToByteArray();
+                //img.ColorFuzz = new Percentage(50);
+                //img.Transparent(DarkMode ? MagickColors.Black : MagickColors.White);
+
+                byte[] imageData = null;//img.ToByteArray();
 
                 using InMemoryRandomAccessStream stream = new();
                 using (DataWriter writer = new(stream.GetOutputStreamAt(0)))
@@ -64,35 +67,44 @@ namespace AdvancedInfo.Handlers
 
         private async Task Load()
         {
-            DPP = await StorageFolder.GetFolderFromPathAsync(Environment.GetEnvironmentVariable("SystemDrive") + @"\DPP");
+            DPP = await StorageFolder.GetFolderFromPathAsync
+                (Environment.GetEnvironmentVariable("SystemDrive") + @"\DPP");
+
             IReadOnlyList<StorageFolder> EnumeratedFolders = await DPP.GetFoldersAsync();
-            bool IsMMODevice = EnumeratedFolders.Any(x => string.Equals(x.Name, "MMO", StringComparison.InvariantCultureIgnoreCase));
+
+            bool IsMMODevice = EnumeratedFolders.Any(x => 
+            string.Equals(x.Name, "MMO", StringComparison.CurrentCulture)); // InvariantCultureIgnoreCase
             Vendor = await DPP.GetFolderAsync(IsMMODevice ? "MMO" : "Nokia");
 
             IReadOnlyList<StorageFolder> EnumeratedVendorFolders = await Vendor.GetFoldersAsync();
             IReadOnlyList<StorageFile> EnumeratedVendorFiles = await Vendor.GetFilesAsync();
 
-            bool HasRegScreen = EnumeratedVendorFolders.Any(x => string.Equals(x.Name, "RegScreen", StringComparison.InvariantCultureIgnoreCase));
-            bool HasCerts = EnumeratedVendorFolders.Any(x => string.Equals(x.Name, "certs", StringComparison.InvariantCultureIgnoreCase));
+            bool HasRegScreen = EnumeratedVendorFolders.Any(x => string.Equals(x.Name, "RegScreen", 
+                StringComparison.CurrentCulture));
+
+            bool HasCerts = EnumeratedVendorFolders.Any(x => string.Equals(x.Name, "certs", 
+                StringComparison.CurrentCulture));
 
             if (HasRegScreen)
             {
                 RegScreen = await Vendor.GetFolderAsync("RegScreen");
                 IReadOnlyList<StorageFile> RegScreenFiles = await RegScreen.GetFilesAsync();
                 
-                if (RegScreenFiles.Any(x => string.Equals(x.Name, "coo.txt", StringComparison.InvariantCultureIgnoreCase)))
+                if (RegScreenFiles.Any(x => string.Equals(x.Name, "coo.txt", StringComparison.CurrentCulture)))
                 {
                     StorageFile COOTxt = await RegScreen.GetFileAsync("coo.txt");
                     COO = await FileIO.ReadTextAsync(COOTxt);
                 }
 
-                if (RegScreenFiles.Any(x => string.Equals(x.Name, "imagelabel_dark.png", StringComparison.InvariantCultureIgnoreCase)))
+                if (RegScreenFiles.Any(x => string.Equals(x.Name, "imagelabel_dark.png", 
+                    StringComparison.CurrentCulture)))
                 {
                     StorageFile ImageLabel = await RegScreen.GetFileAsync("imagelabel_dark.png");
                     RegulatoryBlack = await GetBitmapImageAsync(ImageLabel, true);
                 }
 
-                if (RegScreenFiles.Any(x => string.Equals(x.Name, "imagelabel_light.png", StringComparison.InvariantCultureIgnoreCase)))
+                if (RegScreenFiles.Any(x => string.Equals(x.Name, "imagelabel_light.png", 
+                    StringComparison.CurrentCulture)))
                 {
                     StorageFile ImageLabel = await RegScreen.GetFileAsync("imagelabel_light.png");
                     RegulatoryWhite = await GetBitmapImageAsync(ImageLabel, false);
@@ -104,7 +116,7 @@ namespace AdvancedInfo.Handlers
                 Certs = await Vendor.GetFolderAsync("certs");
                 IReadOnlyList<StorageFile> CertsFiles = await Certs.GetFilesAsync();
 
-                if (CertsFiles.Any(x => string.Equals(x.Name, "npc", StringComparison.InvariantCultureIgnoreCase)))
+                if (CertsFiles.Any(x => string.Equals(x.Name, "npc", StringComparison.CurrentCulture)))
                 {
                     StorageFile NPC = await Certs.GetFileAsync("npc");
 
@@ -113,13 +125,16 @@ namespace AdvancedInfo.Handlers
                     {
                         br.BaseStream.Seek(0xA0, SeekOrigin.Begin);
                         string[] imeielements = BitConverter.ToString(br.ReadBytes(0x8)).Split('-');
+
                         string IMEIBuffer = string.Join("", imeielements.Select(x => string.Join("", x.Reverse())));
+
                         IMEI = string.Join("", IMEIBuffer.Skip(1)) + "-" + IMEIBuffer[0];
                     }
                 }
             }
 
-            if (EnumeratedVendorFiles.Any(x => string.Equals(x.Name, "product.dat", StringComparison.InvariantCultureIgnoreCase)))
+            if (EnumeratedVendorFiles.Any(x => string.Equals(x.Name, "product.dat", 
+                StringComparison.CurrentCulture)))
             {
                 StorageFile ProductDAT = await Vendor.GetFileAsync("product.dat");
                 Product = await FileIO.ReadTextAsync(ProductDAT);

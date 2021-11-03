@@ -23,13 +23,13 @@ namespace USBFunctionMode
                     ConfigName = x,
                     Title = USBFNController.GetFunctionRoleFriendlyName(x),
                     Description = USBFNController.GetFunctionRoleDescription(x)
-                }).OrderByDescending(x => x.Title.Split(" ")[0]);
+                }).OrderByDescending(x => x.Title.Split(' ')[0]);
 
             ModesListView.ItemsSource = items;
             ModesListView.SelectedIndex = items == null ? 0 : items.ToList().FindIndex(
                 x => x.ConfigName.Equals(
-                    USBFNController.Instance.GetCurrentConfiguration(), 
-                    StringComparison.InvariantCultureIgnoreCase));
+                    USBFNController.Instance.GetCurrentConfiguration(),
+                    StringComparison.CurrentCulture));
         }
 
         private void ModesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
